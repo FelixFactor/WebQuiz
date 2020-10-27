@@ -61,21 +61,21 @@ function logout() {
  * throws errors accordingly
  *
  */
-function register(user) {
+function register(user, repeat_pass) {
   let msg = byID("register_errormsg");
 
     //Check if any input is empty
     if (
       isRegisterInputEmpty(
-        user.Email,
-        user.password,
-        user.confirmedPassword,
+        user.email,
+        user.pwd,
+        repeat_pass,
         user.firstName,
         user.lastName,
         user.address,
-        user.NIF,
-        user.phone,
-        user.birthDate
+        user.nif,
+        user.mobileNumber,
+        user.birthdate
       )
     ) {
       throw new Error("Deve preencher todos os campos.");
@@ -92,36 +92,36 @@ function register(user) {
     }
 
     //Validate email
-    if (!regexEmail(user.username)) {
+    if (!regexEmail(user.email)) {
       throw new Error("Introduza um email válido.");
     }
 
     //Validate password
-    if (!regexPassword(user.pass)) {
+    if (!regexPassword(user.pwd)) {
       throw new Error(
         "Introduza uma password válida (1 Maiúscula, 1 minúscula, 1 dígito, 1 caracter especial(.!$%#))."
       );
     }
 
     //Validate repeat password
-    if (!regexPassword(user.repeat_pass)) {
+    if (!regexPassword(repeat_pass)) {
       throw new Error("Repetição de password inválida.");
     }
 
     //Check if repeat password is equal to password
-    if (!(user.confirmedPassword === user.pass)) {
+    if (!(repeat_pass === user.pwd)) {
       throw new Error("Passwords não são iguais.");
     }
 
     //Validate phone
-    let result = validatePhone(user.phone);
+    let result = validatePhone(user.mobileNumber);
 
     if (!(result === true)) {
       throw new Error(result);
     }
 
     //Validate tin
-    if (!validateTin(user.NIF)) {
+    if (!validateTin(user.nif)) {
       throw new Error("Introduza um NIF válido.");
     }
 

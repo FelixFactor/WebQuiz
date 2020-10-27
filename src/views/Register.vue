@@ -34,7 +34,7 @@
         id="register_pass"
         class="registerInput"
         type="password"
-        v-model="input.password"
+        v-model="input.pwd"
       />
     </div>
     <div id="register_item6">
@@ -43,7 +43,7 @@
         id="register_repeat_pass"
         class="registerInput"
         type="password"
-        v-model="input.confirmedPassword"
+        v-model="repeat_pass"
       />
     </div>
     <div id="register_item7">
@@ -52,7 +52,7 @@
         id="register_phone"
         class="registerInput"
         type="text"
-        v-model="input.phone"
+        v-model="input.mobileNumber"
       />
     </div>
     <div id="register_item8">
@@ -79,7 +79,7 @@
         id="register_birth_date"
         class="registerInput"
         type="date"
-        v-model="input.birthDate"
+        v-model="input.birthdate"
       />
     </div>
     <div id="register_item11">
@@ -88,7 +88,7 @@
         id="register_tin"
         class="registerInput"
         type="text"
-        v-model="input.NIF"
+        v-model="input.nif"
       />
     </div>
     <input
@@ -123,14 +123,14 @@ export default {
         firstName: "",
         lastName: "",
         email: "",
-        password: "",
-        confirmedPassword: "",
-        phone: "",
-        country: "",
+        pwd: "",
+        mobileNumber: "",
+        country: "Portugal",
         address: "",
-        birthDate: "",
-        NIF: "",
+        birthdate: "",
+        nif: "",
       },
+      repeat_pass: "",
       currentUser: undefined,
       error: null
     };
@@ -142,10 +142,13 @@ export default {
       this.$router.push({ name: "home" });
     }
   },
+  mounted(){
+    this.maxDate();
+  },
   methods: {
     registerUser() {
       try{
-        register(this.input);
+        register(this.input, this.repeat_pass);
       }catch(e){
         utils.byID('register_errormsg').innerHTML = e.message;
         utils.byID('register_errormsg').style.color = "red";
@@ -155,6 +158,9 @@ export default {
     returnLogin() {
       this.$router.push({ name: "login" });
     },
+    maxDate(){
+      utils.maxDate();
+    }
   },
 };
 </script>

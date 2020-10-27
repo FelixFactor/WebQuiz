@@ -7,7 +7,6 @@ import {
   findMapped,
   generateSalt
 } from "./utils.js";
-import lodash from "lodash";
 import jsrsasign from "jsrsasign";
 
 const USERS_STORAGE_KEY = "users";
@@ -28,7 +27,8 @@ if (!localStorage.getItem(USERS_STORAGE_KEY)) {
       nif: 215698525,
       mobileNumber: 213561987,
       birthdate: new Date(2001, 0, 1), // WET: 01/01/2001
-      address: "Av. da República, n. 5 - 7o Dto, 1100-031 Lisboa"
+      address: "Av. da República, n. 5 - 7o Dto, 1100-031 Lisboa",
+      country: "Espanha"
     }
   ];
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
@@ -107,7 +107,7 @@ export default {
     const [header, payload] = jwt
       .split(".")
       .slice(0, -1)
-      .map(jsrsasign.base64UrlDecode)
+      .map(jsrsasign.b64utoutf8)
       .map(jsrsasign.KJUR.jws.JWS.readSafeJSONString);
     const user = this.getUserByID(payload.sub);
     if (!user) {
@@ -205,10 +205,8 @@ export default {
   },
   /** */
   removeUser(user) {
-    var users = localStorage.getItem("users")
-      ? JSON.parse(localStorage.getItem("users"))
-      : [];
-    var index = lodash.findIndex(users, user);
+    const users = this.usersDB();
+    var index = users.map(x=>{return x.email}).indexOf(user.email);
     if (index === -1) return;
     users.splice(index, 1);
     localStorage.setItem("users", JSON.stringify(users));

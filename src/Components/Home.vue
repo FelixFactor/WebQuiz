@@ -40,7 +40,7 @@
 
 <script>
 // import { logout } from "@/assets/js/site.js";
-import utils from "@/assets/js/utils.js";
+import * as utils from "@/assets/js/utils.js";
 import sessionManager from "@/assets/js/userManagement.js";
 
 
@@ -65,21 +65,34 @@ export default {
     toLogout() {
       document.cookie = "user_jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       this.$router.push({ name: "login" });
+
+      utils.removeFromGroup("left-nav-element", "active");
     },
-    navBar() {
+    navbar() {
       utils.collapse();
     },
     availableMenu() {
       this.$router.push({ name: "available-list" });
+
+      utils.removeFromGroup("left-nav-element", "active");
+      utils.addClassById('btn_available', 'active');
     },
     finishedMenu(){
       this.$router.push({ name: "finished-list" });
+
+      utils.removeFromGroup("left-nav-element", "active");
+      utils.addClassById('btn_finished', 'active');
     },
     scheduledMenu(){
       this.$router.push({ name: "scheduled-list" });
+
+      utils.removeFromGroup("left-nav-element", "active");
+      utils.addClassById('btn_scheduled', 'active');
     },
     userSets(){
       this.$router.push({ name: "userSettings" });
+
+      utils.removeFromGroup("left-nav-element", "active");
     }
   }
 };

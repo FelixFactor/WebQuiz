@@ -39,7 +39,9 @@ export {
   everyCharIn,
   isDigit,
   when,
-  generateSalt
+  generateSalt,
+  ValidateFields,
+  maxDateSettings
 };
 
 function byID(elementId) {
@@ -96,7 +98,7 @@ function regexLastName(lastName) {
 
 //Regex for email
 function regexEmail(email) {
-  let regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  let regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   if (email.match(regex) === null) {
     return false;
@@ -306,6 +308,26 @@ function maxDate() {
   byID("register_birth_date").setAttribute("max", value);
 }
 
+//Set max date for settings_birth_date
+function maxDateSettings() {
+  var dtToday = new Date();
+  var month = dtToday.getMonth() + 1;
+  var day = dtToday.getDate();
+  var year = dtToday.getFullYear();
+
+  if (month < 10) {
+    month = "0" + month.toString();
+  }
+
+  if (day < 10) {
+    day = "0" + day.toString();
+  }
+
+  var value = year + "-" + month + "-" + day;
+
+  byID("settings_birth_date").setAttribute("max", value);
+}
+
 //Open or collapse left-nav
 function collapse() {
   let nav = byID("left_nav");
@@ -405,6 +427,35 @@ function checkRadioBtns(arrayofRadioBtns) {
     }
   }
   return undefined;
+}
+
+function ValidateFields (firstName, lastName, Email, phone, tin){
+  //Validate first name
+  if (!regexFirstName(firstName)) {
+    throw new Error("Introduza o primeiro nome.");
+  }
+
+  //Validate last name
+  if (!regexLastName(lastName)) {
+    throw new Error("Introduza o apelido.");
+  }
+
+  //Validate email
+  if (!regexEmail(Email)) {
+    throw new Error("Introduza um email válido.");
+  }
+
+  //Validate phone
+  let result = validatePhone(phone.toString());
+
+  if (!(result === true)) {
+    throw new Error(result);
+  }
+
+  //Validate tin
+  if (!validateTin(tin)) {
+    throw new Error("Introduza um NIF válido.");
+  }
 }
 
 
