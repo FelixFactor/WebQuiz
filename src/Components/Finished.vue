@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-for="quiz of quizes" v-bind:key="quiz.id">
+  <div  class="main-element quiz-box">
+    <div v-for="quiz of getQuizes()" v-bind:key="quiz.id">
       <div class="quiz-element">
         <p name="course">{{ quiz.course }}</p>
         <p name="topic">{{ quiz.topic }}</p>
@@ -15,9 +15,15 @@
 </template>
 
 <script>
-import {} from "@/assets/js/testManager.js";
+// eslint-disable-next-line no-unused-vars
+import testManager from "@/assets/js/testManager.js";
+import userTests from "@/assets/js/userTestsManager.js";
+
 export default {
   name: "Finished",
+  props: {
+    currentUser: Object
+  },
   data() {
     return {
       quizes: null
@@ -28,15 +34,10 @@ export default {
   },
   methods: {
     loadFinished() {
-      this.quizes = [
-        {
-          id: 1,
-          course: "Maths",
-          topic: "Advanced Logic",
-          professor: "João Félix",
-          dificulty: "FHard"
-        }
-      ];
+      this.quizes = userTests.getFinishedTests(this.currentUser.email);
+    },
+    getQuizes() {
+      return this.quizes;
     }
   }
 };

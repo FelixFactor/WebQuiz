@@ -4,15 +4,21 @@
       <h1>WebQuiz</h1>
       <nav id="top-nav" class="top-nav">
         <div class="top-nav-element">
-          <span id="welcomeUser">Bem-vindo {{currentUser.firstName}} {{currentUser.lastName}} </span>
-          <a id="btn_settings" href="" @click.prevent="userSets">Settings</a>
+          <span id="welcomeUser">Bem-vindo {{user.fullname}}</span>
+
+          <router-link :to="{ name: 'user-settings' }">
+            <a id="btn_settings">Settings</a>
+          </router-link>
+
           <a id="btn_logout" href="" @click.prevent="toLogout">Logout</a>
         </div>
       </nav>
     </header>
-    
+
     <div class="main">
-      <router-view></router-view>
+      <div class="main-element">
+        <router-view></router-view>
+      </div>
       <!--LEFT NAVIGATION BAR-->
       <div class="left-nav open" id="left_nav">
         <div class="hamburguer">
@@ -22,15 +28,22 @@
             <div></div>
           </a>
         </div>
-        <div class="left-nav-element" id="btn_available" @click="availableMenu">
+
+        <div class="left-nav-element" id="btn_available" @click.prevent="loadAvailable">
           <a>Testes Disponíveis</a>
         </div>
-        <div class="left-nav-element" id="btn_finished" @click="finishedMenu">
-          <a>Testes Realizados</a>
-        </div>
-        <div class="left-nav-element" id="btn_scheduled" @click="scheduledMenu">
-          <a>Testes Agendados</a>
-        </div>
+
+        <router-link :to="{ name: 'finished-list', params:{currentUser: this.currentUser} }">
+          <div class="left-nav-element" id="btn_finished">
+            <a>Testes Realizados</a>
+          </div>
+        </router-link>
+
+        <router-link :to="{ name: 'scheduled-list' }">
+          <div class="left-nav-element" id="btn_scheduled">
+            <a>Testes Agendados</a>
+          </div>
+        </router-link>
       </div>
       <!--END LEFT NAVIGATION BAR-->
     </div>
@@ -39,27 +52,26 @@
 </template>
 
 <script>
-// import { logout } from "@/assets/js/site.js";
-import * as utils from "@/assets/js/utils.js";
-import sessionManager from "@/assets/js/userManagement.js";
-
-
+import { collapse } from "@/assets/js/utils.js";
+import userManager from "@/assets/js/userManager.js";
 
 export default {
   name: "Home",
+  props: {
+    currentUser: Object
+  },
   data() {
     return {
-      currentUser: {
-        type: Object,
-        required: false
-      } 
-    }
+      user:{
+        fullname: ""
+      }
+    };
   },
-  create(){
-    if(sessionManager.isTokenValid()){
-
+  created() {
+    if (!userManager.isTokenValid()) {
       this.$router.replace({ name: "login" });
     }
+    this.user.fullname = this.getFullname();
   },
   methods: {
     toLogout() {
@@ -69,32 +81,15 @@ export default {
       utils.removeFromGroup("left-nav-element", "active");
     },
     navbar() {
-      utils.collapse();
+      collapse();
     },
-    availableMenu() {
-      this.$router.push({ name: "available-list" });
-
-      utils.removeFromGroup("left-nav-element", "active");
-      utils.addClassById('btn_available', 'active');
+    loadAvailable(){
+      this.$router.push({name: 'available-list'});
     },
-    finishedMenu(){
-      this.$router.push({ name: "finished-list" });
-
-      utils.removeFromGroup("left-nav-element", "active");
-      utils.addClassById('btn_finished', 'active');
-    },
-    scheduledMenu(){
-      this.$router.push({ name: "scheduled-list" });
-
-      utils.removeFromGroup("left-nav-element", "active");
-      utils.addClassById('btn_scheduled', 'active');
-    },
-    userSets(){
-      this.$router.push({ name: "userSettings" });
-
-      utils.removeFromGroup("left-nav-element", "active");
+    getFullname(){
+      return this.currentUser == undefined? "unknow":this.currentUser.firstName +" "+ this.currentUser.lastName;
     }
-  }
+  },
 };
 </script>
 

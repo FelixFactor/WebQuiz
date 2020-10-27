@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
 
-import { getUserID } from "./userManagement.js";
+import userManager from "./userManager.js";
 import { byID, markQuestion, lockRdBtns, checkRadioBtns } from "./utils.js";
-
+import userTests from "./userTestsManager.js";
 
 const AVAILABLE_TESTS = "tests";
 const QUESTIONS_STORAGE = "questions";
@@ -25,7 +24,7 @@ if (!localStorage.getItem(AVAILABLE_TESTS)) {
       maxScore: 20,
       duration: 2,
       startDate: "2020-10-28T00:00:00.000Z",
-      always: true,
+      repeatTest: true,
       questions: [1, 2, 3, 4]
     },
     {
@@ -37,7 +36,7 @@ if (!localStorage.getItem(AVAILABLE_TESTS)) {
       maxScore: 10,
       duration: 2,
       startDate: "2020-10-28T00:00:00.000Z",
-      always: true,
+      repeatTest: true,
       questions: [9, 10, 11, 12]
     },
     {
@@ -49,11 +48,11 @@ if (!localStorage.getItem(AVAILABLE_TESTS)) {
       maxScore: 20,
       duration: 2,
       startDate: "2020-10-28T00:00:00.000Z",
-      always: true,
+      repeatTest: true,
       questions: [5, 6, 7, 8]
     },
     {
-      id: 3,
+      id: 4,
       course: "Linguagens de Programação",
       topic: "Vários Conceitos",
       professor: "Maria de Fátima",
@@ -61,7 +60,7 @@ if (!localStorage.getItem(AVAILABLE_TESTS)) {
       maxScore: 20,
       duration: 2,
       startDate: "2020-10-28T15:00:00.000Z",
-      always: false,
+      repeatTest: false,
       questions: [5, 6, 7, 8]
     }
   ];
@@ -175,17 +174,7 @@ if (!localStorage.getItem(QUESTIONS_STORAGE)) {
   localStorage.setItem(QUESTIONS_STORAGE, JSON.stringify(avaQuestions));
 }
 
-/**
- * Test Constructor
- * @param {*} test
- * @param {*} questions
- */
-function currentTest(test, questions) {
-  this.test = test;
-  this.questions = questions;
-}
-
-const availableTests = [];
+//const availableTests = [];
 const arrayofQs = [];
 
 
@@ -249,45 +238,11 @@ export default {
   },
 
   /**
-   * This is where the magic happens
-   *
-   * If the Tests Array contain any objects this will generate the appropriate divs for them.
-   *
-   * @param {Array} arrayOfObjects
-   *
-   * @returns HTML code to render the test boxes
-   */
-  renderQuizElement(arrayOfObjects) {
-    if (availableTests.length > 0) {
-      availableTests.length = 0;
-    }
-
-    //verificar arrayofObjects = null ou undefined
-
-    for (const _item of arrayOfObjects) {
-      availableTests.push(
-        `<div class="quiz-element">
-                <p name="course">${_item.course}</p>
-                <p name="topic">${_item.topic}</p>
-                <p name="professor">${_item.professor}</p>
-                <p name="dificulty">${_item.dificulty}</p>
-                <a data-value="${_item.id}" id="btn_enterTest" class="btn btn-success">Entrar</a>
-            </div>`
-      );
-    }
-    //console.log(tests.join(""));
-    byID("quiz_box_available").insertAdjacentHTML(
-      "beforeend",
-      availableTests.join("")
-    );
-  },
-
-  /**
    * gets all finished user's quizes
    * renders the list of quizes
    */
   getAllFinishedTests() {
-    const currentUser = getUserID();
+    const currentUser = userManager.getUserEmail();
     let quizlist = [];
     for (let quiz of this.userTestsDB()) {
       if (quiz.userId == currentUser) {
@@ -297,6 +252,17 @@ export default {
     this.renderQuizElement(quizlist);
   },
 
+  /**
+ * Test Constructor
+ * @param {*} test
+ * @param {*} questions
+ */
+  currentTest(test, questions) {
+    return {
+      test,
+      questions
+    }
+  },
   /**
    * Gets the questions from the given quiz Id
    * @param {*} testId
@@ -313,7 +279,7 @@ export default {
       arrayofQs.push(this.getQbyId(question));
     }
     //save the current test to localstorage
-    const quiz = new currentTest(this.findTestById(testId), arrayofQs);
+    const quiz = new this.currentTest(this.findTestById(testId), arrayofQs);
 
     //construct the quiz
     return quiz;
@@ -336,13 +302,12 @@ export default {
    * @param {*} answers
    * @param {*} score
    */
-  currentUserTest(userId, quizId, answers, score, quizHtml) {
+  currentUserTest(userId, quizId, answers, score) {
     return {
       userId,
       quizId,
       answers,
-      score,
-      quizHtml
+      score
     };
   },
 
@@ -351,20 +316,19 @@ export default {
    * 1 - creates an object with userId, quizId and the user's answers
    * 2 - stores the quiz in DB
    */
-  submitTest() {
+  submitTest(testId) {
     score = 0;
     const answers = this.scoreUserAnswers();
 
-    score = this.getScore(score, this.findTestById(byID("quiz_layout").dataset.id));
+    score = this.getScore(score, this.findTestById(testId));
 
-    const textHtml = byID("quiz_layout").innerHTML;
+    //const textHtml = byID("quiz_layout").innerHTML;
 
     const userQuiz = this.currentUserTest(
-      this.getUserID(),
-      this.findTestById(byID("quiz_layout").dataset.id).id, //keeps only the quiz's ID
+      userManager.getUserEmail(),
+      testId,
       answers,
-      score,
-      textHtml
+      score
     );
 
     this.storeUSerTest(userQuiz);
@@ -380,16 +344,11 @@ export default {
    * User test contains: userId, quizId, an array with the answers with Key, Value pair (QID, String)
    */
   storeUSerTest(userQuiz) {
-    try {
-      let userTests = [];
-      if (localStorage[USER_QUIZ_STORAGE]) {
-        userTests = this.userTestsDB();
-      }
-      userTests.push(userQuiz);
-      localStorage.setItem(USER_QUIZ_STORAGE, JSON.stringify(userTests));
-    } catch (ex) {
-      alert(ex);
-    }
+    const db = userTests.getUserTestsDB();
+
+    db.push(userQuiz);
+
+    localStorage.setItem([USER_QUIZ_STORAGE], JSON.stringify(userQuiz));
   },
 
   /**
@@ -404,15 +363,16 @@ export default {
     //there are div elements holding multiple choice and direct questions
     //it gets all divs in the element quiz_layout and iterates through to check the answers
     for (let item of byID("quiz_layout").getElementsByTagName("div")) {
-      if (item.classList[0] == "multiple") {
+      if (item.classList[0] == "multiple") { //item is an element containing a question and possible answers
         const hasAnswer = checkRadioBtns(item);
+        //returns undefined if no RB was checked
         this.checkAnswer(hasAnswer);
-        userAnswers.push(item.dataset.id + "=" + hasAnswer);
+        userAnswers.push(hasAnswer.id + "=" + hasAnswer.value);
         lockRdBtns(item);
       } else if (item.classList[0] == "direct") {
         const query = item.querySelector("input");
         this.checkAnswer(query);
-        userAnswers.push(query.dataset.id + "=" + query.value);
+        userAnswers.push(query.id + "=" + query.value);
         //locks the text-box
         query.setAttribute("readonly", true);
       }
@@ -427,12 +387,11 @@ export default {
    * @param {*} answer element containing the answer. Must contain a value!
    */
   checkAnswer(answer) {
-    if (answer == undefined) {
+    if (answer.value == undefined) {
       //console.log('wrong');
       //markQuestion(byClass('multiple'), 'wrong') COMO MARCAMOS UM UNDEFINED??????
     } else if (
-      answer.value.toUpperCase() ==
-      arrayofQs.find(i => i.id == answer.dataset.id).correctAnswer.toUpperCase()
+      answer.value.toUpperCase() == arrayofQs.find(i => i.id == answer.id).correctAnswer.toUpperCase()
     ) {
       //addClassById(answer, 'correct');
       //console.log('correct');

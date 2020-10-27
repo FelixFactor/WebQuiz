@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { sessionManager } from "@/assets/js/userManagement.js";
+import sessionManager from "@/assets/js/userManager.js";
 import { register } from "@/assets/js/site.js";
 import * as utils from "@/assets/js/utils.js";
 

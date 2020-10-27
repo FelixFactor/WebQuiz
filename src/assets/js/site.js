@@ -16,7 +16,7 @@ import {
   formatDate
 } from "./utils.js";
 
-import sessionManager from "./userManagement.js";
+import sessionManager from "./userManager.js";
 
 import { switchPage } from "./viewManager.js";
 

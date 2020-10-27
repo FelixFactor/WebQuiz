@@ -1,13 +1,19 @@
 <template>
-  <div class="main-element quiz-box">
-      <div class="quiz-element" v-for="quiz of getTests()" v-bind:key="quiz.id">
-        <p name="course">{{ quiz.course }}</p>
-        <p name="topic">{{ quiz.topic }}</p>
-        <p name="professor">{{ quiz.professor }}</p>
-        <p name="dificulty">{{ quiz.dificulty }}</p>
-        <a id="btn_enterTest" class="btn btn-success" @click="loadQuiz">Entrar</a>
+  <section  class="main-element quiz-box">
+      <div  v-for="quiz of getTests()" v-bind:key="quiz.id">
+        <div class="quiz-element">
+          <p name="course">{{ quiz.course }}</p>
+          <p name="topic">{{ quiz.topic }}</p>
+          <p name="professor">{{ quiz.professor }}</p>
+          <p name="dificulty">{{ quiz.dificulty }}</p>
+          <p name="dificulty">{{ quiz.duration }}</p>
+          <p name="dificulty">{{ quiz.startDate }}</p>
+          <router-link :to="{name: 'active-test', params:{activeId: quiz.id}}">
+            <a id="btn_enterTest" class="btn btn-success">Entrar</a>
+          </router-link>
+        </div>
       </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -28,11 +34,8 @@ export default {
       this.quizes = testManager.getAllAvailableTests();
     },
     getTests(){
-      return this.quizes;
-    },
-    loadQuiz(){
-      //loads the ActiveTest sending the quiz.id that was clicked
-  }
+      return this.quizes.filter(test => test.repeatTest == true);
+    }
   }
 };
 </script>

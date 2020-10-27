@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import sessionManager from "@/assets/js/userManagement.js";
+import sessionManager from "@/assets/js/userManager.js";
 import * as utils from "@/assets/js/utils.js";
 
 export default {
@@ -39,8 +39,7 @@ export default {
     return {
       email: "",
       pass: "",
-      currentUser: undefined,
-      error: null
+      currentUser: undefined
     };
   },
   // created() {
@@ -53,7 +52,10 @@ export default {
       try{
         utils.isInputEmpty(this.email, this.pass);
         this.currentUser = sessionManager.clientSideLogin(this.email, this.pass);
-        this.$router.push({ name: "home" });
+        if(this.currentUser == undefined){
+          this.$router.replace({ name: "login" });
+        }
+        this.$router.push({ name: "home", params:{currentUser: this.currentUser}});
       }catch(ex){
         utils.byID('errormsg').innerHTML = ex.message;
         utils.byID('errormsg').classList.remove("hidden");

@@ -1,51 +1,55 @@
 <template>
-      <div id="quiz_layout" class="quiz-layout" v-bind:key="quiz.header.id">
-        <header>
-          <h2>${currentTest.test.course}</h2>
-          <h4>${currentTest.test.topic}</h4>
-        </header>
-    
-        <div class="multiple" data-id="${_item.id}">
-          <h4>${_item.question}</h4>
-    
-          <div class="multChoice">
-            <input type="radio" name="selected${_item.id}" value="${answer}"
-              data-id="${_item.id}"/>
-            <label id="${answer}"> ${answer} </label>
+  <div id="quiz_layout" class="quiz-layout">
+    <header>
+      <h2>{{ quiz.test.course }}</h2>
+      <h4>{{ quiz.test.topic }}</h4>
+    </header>
+
+    <div v-for="q in quiz.questions" :key="q.id">
+      <div class="multiple" v-if="q.type === 'multiple'" :id="q.id">
+        <h4>{{ q.question }}</h4>
+        <div v-for="answer in q.answers" :key="answer.id">
+          <div class="multChoice" :id="q.id">
+            <input type="radio" :value="answer" :name="q.id" :id="q.id"/>
+            <label> {{ answer }} </label>
           </div>
         </div>
-    
-        <div class="direct">
-          <h4>${_item.question}</h4>
-          <input type="text" data-id="${_item.id}" id="direct${_item.id}" />
-        </div>
-    
-        <div>
-          <button id="btn_submitTest">Submit</button>
-        </div>
       </div>
+
+      <div class="direct" v-else-if="q.type === 'direct'">
+        <h4>{{ q.question }}</h4>
+        <input type="text" :id="q.id"/>
+      </div>
+    </div>
+    <div>
+      <button id="btn_submitTest" @click="submitTest(quiz.test.id)">Submit</button>
+    </div>
+  </div>
 </template>
 
 <script>
-import testManager from "@/assets/js/testManager.js"
+import testManager from "@/assets/js/testManager.js";
 
 export default {
-    name: "ActiveTest",
-    props:{
-        id: Int32Array //???
+  name: "ActiveTest",
+  props: {
+    activeId: Number,
+  },
+  data() {
+    return {
+      quiz: {},
+    };
+  },
+  created() {
+    this.loadQuiz();
+  },
+  methods: {
+    loadQuiz() {
+      this.quiz = testManager.getCompleteQuiz(this.activeId);
     },
-    data() {
-        return {
-            quiz: {}
-        }
-    },
-    created() {
-        this.loadQuiz();
-    },
-    methods: {
-        loadQuiz() {
-            this.quiz = testManager.getCompleteQuiz(this.id);
-        }
+    submitTest(id){
+      testManager.submitTest(id);
     }
-}
+  },
+};
 </script>

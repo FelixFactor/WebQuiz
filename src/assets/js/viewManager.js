@@ -20,7 +20,7 @@ import {
 
 import * as testManager from "./testManager.js";
 
-import { getUserFullName } from "./userManagement.js";
+import { getUserFullName } from "./userManager.js";
 
 export {
   switchPage,

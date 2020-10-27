@@ -8,7 +8,8 @@ import Home from "@/Components/Home.vue";
 import AvailableList from "@/Components/Available.vue";
 import FinishedList from "@/Components/Finished.vue";
 import ScheduledList from "@/Components/Scheduled.vue";
-import UserSettings from "@/Components/UserSettings.vue"
+import UserSettings from "@/Components/UserSettings.vue";
+import ActiveTest from "@/Components/ActiveTest.vue";
 
 Vue.use(VueRouter);
 
@@ -43,7 +44,8 @@ const routes = [
       {
         path: "finished",
         name: "finished-list",
-        component: FinishedList
+        component: FinishedList,
+        props: true
       },
       {
         path: "scheduled",
@@ -52,8 +54,14 @@ const routes = [
       },
       {
         path: "settings",
-        name: "userSettings",
+        name: "user-settings",
         component: UserSettings
+      },
+      {
+        path: "",
+        name: "active-test",
+        component: ActiveTest,
+        props: true
       }
     ]
   },

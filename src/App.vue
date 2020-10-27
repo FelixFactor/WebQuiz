@@ -6,12 +6,7 @@
 
 <script>
 export default {
-  name: "App",
-  data() {
-    return {
-      currentUser: undefined
-    };
-  }
+  name: "App"
 };
 </script>
 
