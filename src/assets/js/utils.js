@@ -426,7 +426,7 @@ function checkRadioBtns(arrayofRadioBtns) {
       return rdBtn;
     }
   }
-  return {id:arrayofRadioBtns.id, value:undefined};
+  return {id:arrayofRadioBtns.id, value:null};
 }
 
 function ValidateFields (firstName, lastName, Email, phone, tin){

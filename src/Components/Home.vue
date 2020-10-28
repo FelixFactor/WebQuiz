@@ -57,28 +57,28 @@ import userManager from "@/assets/js/userManager.js";
 
 export default {
   name: "Home",
-  props: {
-    currentUser: Object
-  },
   data() {
     return {
       user:{
         fullname: ""
-      }
+      },
+      currentUser: null
     };
   },
   created() {
-    if (!userManager.isTokenValid()) {
+    if (!userManager.getCurrentUser()) {
       this.$router.replace({ name: "login" });
     }
-    this.user.fullname = this.getFullname();
+    else{
+      this.currentUser = userManager.getCurrentUser();
+      this.user.fullname = this.getFullname();
+    }
   },
   methods: {
     toLogout() {
       document.cookie = "user_jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      this.currentUser = null;
       this.$router.push({ name: "login" });
-
-      utils.removeFromGroup("left-nav-element", "active");
     },
     navbar() {
       collapse();
@@ -87,7 +87,7 @@ export default {
       this.$router.push({name: 'available-list'});
     },
     getFullname(){
-      return this.currentUser == undefined? "unknow":this.currentUser.firstName +" "+ this.currentUser.lastName;
+      return this.currentUser === null? "unknow":this.currentUser.firstName +" "+ this.currentUser.lastName;
     }
   },
 };

@@ -18,7 +18,7 @@
       placeholder="Enter your password..."
       v-model="pass"/>
 
-    <input id="btn_login" class="loginButton" type="submit" v-on:click="toLogin"/>
+    <input id="btn_login" class="loginButton" type="submit" v-on:click="toLogin" value="Entrar"/>
 
     <label id="errormsg" class="loginInput hidden"></label>
 
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import sessionManager from "@/assets/js/userManager.js";
+import userManager from "@/assets/js/userManager.js";
 import * as utils from "@/assets/js/utils.js";
 
 export default {
@@ -42,20 +42,21 @@ export default {
       currentUser: undefined
     };
   },
-  // created() {
-  //   if (sessionManager.isLoggedIn()) {
-  //     this.$router.push({ name: "home" });
-  //   }
-  // },
+  created() {
+    if (userManager.getCurrentUser()) {
+      this.$router.push({ name: "home" });
+    }
+    //userManager.getHash();
+  },
   methods: {
     toLogin() {
       try{
         utils.isInputEmpty(this.email, this.pass);
-        this.currentUser = sessionManager.clientSideLogin(this.email, this.pass);
+        this.currentUser = userManager.clientSideLogin(this.email, this.pass);
         if(this.currentUser == undefined){
           this.$router.replace({ name: "login" });
         }
-        this.$router.push({ name: "home", params:{currentUser: this.currentUser}});
+        this.$router.push({ name: "home"});
       }catch(ex){
         utils.byID('errormsg').innerHTML = ex.message;
         utils.byID('errormsg').classList.remove("hidden");
@@ -68,7 +69,7 @@ export default {
       this.$router.push({name: "recover"});
     },
     getCurrentUser() {
-      sessionManager.getUser();
+      userManager.getUser();
     }
   }
 };

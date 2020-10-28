@@ -48,7 +48,9 @@ export default {
       this.quiz = testManager.getCompleteQuiz(this.activeId);
     },
     submitTest(id){
-      testManager.submitTest(id);
+      const userQuizId = testManager.submitTest(id);
+
+      this.$router.push({name: 'submitted-test', params:{quizId: userQuizId}});
     }
   },
 };

@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import sessionManager from "../assets/js/userManagement.js";
+import sessionManager from "../assets/js/userManager.js";
 import * as utils from "../assets/js/utils.js";
 
 export default {
@@ -81,7 +81,7 @@ export default {
   },
   methods:{
     saveSettings(){
-      const email = sessionManager.getUserID();
+      const email = sessionManager.getUserEmail();
       const user = sessionManager.getUserByID(email);
       let msg = utils.byID("settings_errormsg");
 
@@ -166,7 +166,7 @@ export default {
       }
     },
     loadUser(){
-      const email = sessionManager.getUserID();
+      const email = sessionManager.getUserEmail();
       const user = sessionManager.getUserByID(email);
       this.input.firstName=user.firstName;
       this.input.lastName=user.lastName;

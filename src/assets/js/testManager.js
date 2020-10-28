@@ -1,13 +1,15 @@
 
 import userManager from "./userManager.js";
-import { byID, markQuestion, lockRdBtns, checkRadioBtns } from "./utils.js";
+import { byID, lockRdBtns, checkRadioBtns } from "./utils.js";
 import userTests from "./userTestsManager.js";
 
 const AVAILABLE_TESTS = "tests";
 const QUESTIONS_STORAGE = "questions";
-const USER_QUIZ_STORAGE = "user_quiz";
 let score = 0;
 
+function userAnswer(questionId, answer) {
+  return {questionId, answer};
+}
 
 /**
  * Constructs the Test Database
@@ -149,7 +151,7 @@ if (!localStorage.getItem(QUESTIONS_STORAGE)) {
         "Programação Orientada a Objectos",
         "Programação Orientada a Objecções"
       ],
-      correctAnswer: "PRIMARY KEY"
+      correctAnswer: "Programação Orientada a Objectos"
     },
     {
       id: 10,
@@ -216,18 +218,6 @@ export default {
     }
     return JSON.parse(localStorage[QUESTIONS_STORAGE]);
   },
-
-  /**
-   * GETS USER'S FINISHED TESTS
-   * OR AN ERROR IF NONE EXISTS
-   */
-  userTestsDB() {
-    if (!localStorage[USER_QUIZ_STORAGE]) {
-      throw Error("No Question Database was found. Please restart app!");
-    }
-    return JSON.parse(localStorage[USER_QUIZ_STORAGE]);
-  },
-
   /**
    * Get all available test
    *
@@ -235,21 +225,6 @@ export default {
    */
   getAllAvailableTests() {
     return this.testsDB();
-  },
-
-  /**
-   * gets all finished user's quizes
-   * renders the list of quizes
-   */
-  getAllFinishedTests() {
-    const currentUser = userManager.getUserEmail();
-    let quizlist = [];
-    for (let quiz of this.userTestsDB()) {
-      if (quiz.userId == currentUser) {
-        quizlist.push(this.findTestById(quiz.quizId));
-      }
-    }
-    this.renderQuizElement(quizlist);
   },
 
   /**
@@ -331,7 +306,7 @@ export default {
       score
     );
 
-    this.storeUSerTest(userQuiz);
+    return userTests.storeUSerTest(userQuiz);
   },
 
   getScore(real, quiz) {
@@ -340,39 +315,27 @@ export default {
   },
 
   /**
-   * Stores a User Test in DB.
-   * User test contains: userId, quizId, an array with the answers with Key, Value pair (QID, String)
-   */
-  storeUSerTest(userQuiz) {
-    const db = userTests.getUserTestsDB();
-
-    db.push(userQuiz);
-
-    localStorage.setItem([USER_QUIZ_STORAGE], JSON.stringify(userQuiz));
-  },
-
-  /**
    * Iterates through the user's answers and scores them
    * returning an array with the given answers.
    * @returns {*} userAnswers An array with the pair [Key, Value]
    */
   scoreUserAnswers() {
-    const userAnswers = [];
-
+    const userAnswers = [{}];
+    
     //quiz_layout is the element that holds questions and answers
     //there are div elements holding multiple choice and direct questions
     //it gets all divs in the element quiz_layout and iterates through to check the answers
     for (let item of byID("quiz_layout").getElementsByTagName("div")) {
       if (item.classList[0] == "multiple") { //item is an element containing a question and possible answers
         const hasAnswer = checkRadioBtns(item);
-        //returns undefined if no RB was checked
         this.checkAnswer(hasAnswer);
-        userAnswers.push(hasAnswer.id + "=" + hasAnswer.value);
+        //returns question Id with value=undefined if no RB was checked
+        userAnswers.push(new userAnswer(hasAnswer.id, hasAnswer.value));
         lockRdBtns(item);
       } else if (item.classList[0] == "direct") {
         const query = item.querySelector("input");
         this.checkAnswer(query);
-        userAnswers.push(query.id + "=" + query.value);
+        userAnswers.push(new userAnswer(query.id, query.value));
         //locks the text-box
         query.setAttribute("readonly", true);
       }
@@ -387,20 +350,11 @@ export default {
    * @param {*} answer element containing the answer. Must contain a value!
    */
   checkAnswer(answer) {
-    if (answer.value == undefined) {
-      //console.log('wrong');
-      //markQuestion(byClass('multiple'), 'wrong') COMO MARCAMOS UM UNDEFINED??????
-    } else if (
-      answer.value.toUpperCase() == arrayofQs.find(i => i.id == answer.id).correctAnswer.toUpperCase()
-    ) {
-      //addClassById(answer, 'correct');
-      //console.log('correct');
-      markQuestion(answer, "correct");
+    if(answer.value === null){
+      return;
+    }
+    else if (answer.value.toUpperCase() == arrayofQs.find(i => i.id == answer.id).correctAnswer.toUpperCase()) {
       score += 1;
-    } else {
-      //addClassById(answer, 'wrong');
-      //console.log('wrong');
-      markQuestion(answer, "wrong");
     }
   }
 }

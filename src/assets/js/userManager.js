@@ -14,7 +14,15 @@ const SECRET = "aP2doagr1$";
 const USER_JWT = "user_jwt";
 const SALT_LENGTH = 7;
 
-let currentUser = undefined;
+let currentUser = null;
+
+function userDetails(email, firstName, lastName){
+  return{
+    email,
+    firstName,
+    lastName
+  };
+}
 
 if (!localStorage.getItem(USERS_STORAGE_KEY)) {
   const initialUsers = [
@@ -22,7 +30,7 @@ if (!localStorage.getItem(USERS_STORAGE_KEY)) {
       email: "felix@mail.com",
       firstName: "joão",
       lastName: "felix", // pwd is 'abc'
-      pwd: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      pwd: "cfb28b9de815d0607f6b779c3bd6df1328c1a3ae399c7b4cc6a34a19ed898adf",
       salt: "0l/CqPdJdB",
       nif: 215698525,
       mobileNumber: 213561987,
@@ -34,21 +42,19 @@ if (!localStorage.getItem(USERS_STORAGE_KEY)) {
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
 }
 
+
+
+
 export default {
-  /** */
-  isLoggedIn() {
-    if (currentUser === undefined) {
-      currentUser = this.requestUserInformation();
-    }
-    return currentUser !== undefined;
+  getHash(){
+    const md = new jsrsasign.KJUR.crypto.MessageDigest({
+      alg: "sha256",
+      prov: "cryptojs"
+    });
+    md.updateString('0l/CqPdJdB'+'abc');
+    console.log(md.digest());
   },
-  /** */
-  getUser() {
-    if (!this.isLoggedIn()) {
-      throw new UserError("Currently no user is logged in.");
-    }
-    return currentUser;
-  },
+
   /** */
   clientSideLogin(email, pwd) {
     currentUser = this.authenticateUser(email, pwd);
@@ -61,7 +67,7 @@ export default {
       throw new UserError("Invalid username and/or password.");
     }
     setCookieValue(USER_JWT, this.generateJWTForUser(user), { maxAge: 86400 });
-    return JSON.stringify(this.extractBasicUserInfo(user));
+    return new userDetails(user.email, user.firstName, user.lastName);
   },
   /** */
   getUserByLoginCredentials(username, pwd) {
@@ -70,12 +76,14 @@ export default {
       prov: "cryptojs"
     });
     const db = this.usersDB();
+    const user = db.find(
+      user => user.email === username);
+    md.updateString(user.salt+pwd);
     return db.find(
-      user => user.email === username && user.pwd === md.digest(user.salt + pwd));
+      user => user.email === username && user.pwd === md.digest());
   },
   /** */
   requestUserInformation() {
-    const NOT_FOUND = "{}";
     const userJSON = this.getCurrentUser();
     if (!userJSON) {
       throw TypeError(`Unexpected falsy return value: ${userJSON}.`);
@@ -86,14 +94,13 @@ export default {
         `Unexpected return value from remote method: ${userJSON}.`
       );
     }
-    return userJSON !== NOT_FOUND ? user : undefined;
+    return userJSON !== null ? user : undefined;
   },
   /** */
   getCurrentUser() {
-    const NOT_FOUND = "{}";
     const jwt = getCookieValue(USER_JWT);
     if (!jwt) {
-      return NOT_FOUND;
+      return null;
     }
     // let's check if it's a valid JWT
     if (
@@ -102,7 +109,7 @@ export default {
         verifyAt: "now"
       })
     ) {
-      return NOT_FOUND;
+      return null;
     }
     const [header, payload] = jwt
       .split(".")
@@ -111,15 +118,14 @@ export default {
       .map(jsrsasign.KJUR.jws.JWS.readSafeJSONString);
     const user = this.getUserByID(payload.sub);
     if (!user) {
-      return NOT_FOUND;
+      return null;
     }
-    return JSON.stringify(this.extractBasicUserInfo(user));
+    return new userDetails(user.email, user.firstName, user.lastName);
   },
   /** */
-  getUserID() {
-    const user = this.getCurrentUser().split(",");
-    const email = user[0].split(":");
-    return email[1].replaceAll('"', "");
+  getUserEmail() {
+    const user = this.getCurrentUser();
+    return user.email;
   },
   /** */
   userExists(newUserSpec) {
@@ -143,10 +149,11 @@ export default {
       prov: "cryptojs"
     });
     const salt = generateSalt(SALT_LENGTH);
+    md.updateString(salt+userSpec.pwd);
     const newUser = {
       ...userSpec,
       salt: salt,
-      pwd: md.digest(salt + userSpec.pwd)
+      pwd: md.digest()
     };
     this.storeUser(newUser);
   },
@@ -171,17 +178,12 @@ export default {
     return jsrsasign.KJUR.jws.JWS.sign("HS256", header, payload, SECRET);
   },
   /** */
-  extractBasicUserInfo(user) {
-    const { email, firstName, lastName } = user;
-    return { email, firstName, lastName };
-  },
-  /** */
   getUserByID(userID) {
     return this.usersDB().find(user => user.email === userID);
   },
   /** */
   isTokenValid(){        
-    const jwt = this.getCookieValue(USER_JWT);
+    const jwt = getCookieValue(USER_JWT);
     if (!jwt) {
         return false
     }

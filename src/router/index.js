@@ -10,6 +10,7 @@ import FinishedList from "@/Components/Finished.vue";
 import ScheduledList from "@/Components/Scheduled.vue";
 import UserSettings from "@/Components/UserSettings.vue";
 import ActiveTest from "@/Components/ActiveTest.vue";
+import SubmittedTest from "@/Components/SubmittedTest.vue";
 
 Vue.use(VueRouter);
 
@@ -61,6 +62,12 @@ const routes = [
         path: "",
         name: "active-test",
         component: ActiveTest,
+        props: true
+      },
+      {
+        path: "",
+        name: "submitted-test",
+        component: SubmittedTest,
         props: true
       }
     ]
