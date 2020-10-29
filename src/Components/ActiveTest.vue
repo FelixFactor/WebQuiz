@@ -1,8 +1,9 @@
 <template>
   <div id="quiz_layout" class="quiz-layout">
     <header>
-      <h2>{{ quiz.test.course }}</h2>
-      <h4>{{ quiz.test.topic }}</h4>
+      <h2>Disciplina: {{ quiz.test.course }}</h2>
+      <h4>Tópico: {{ quiz.test.topic }}</h4>
+      <h2 id="quiz_timer">Tempo restante: <span :class="{'wrong': this.timeLeft <= '00:30'}">{{this.timeLeft}}</span></h2>
     </header>
 
     <div v-for="q in quiz.questions" :key="q.id">
@@ -38,6 +39,8 @@ export default {
   data() {
     return {
       quiz: {},
+      count: "",
+      timeLeft: ""
     };
   },
   created() {
@@ -46,11 +49,57 @@ export default {
   methods: {
     loadQuiz() {
       this.quiz = testManager.getCompleteQuiz(this.activeId);
+      this.timeLeft = this.initTimer(this.quiz.test.duration);
+      this.count = new Date(0);
+      this.count.setMinutes(this.count.getMinutes() + this.quiz.test.duration);
+      this.callTimer();
     },
     submitTest(id){
       const userQuizId = testManager.submitTest(id);
 
       this.$router.push({name: 'submitted-test', params:{quizId: userQuizId}});
+    },
+    initTimer(duration){
+      const start = new Date(0);
+      start.setMinutes(start.getMinutes() + duration);
+
+      var minute = start.getMinutes().toString();
+      var second = start.getSeconds().toString();
+      
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
+      if (second < 10) {
+        second = "0" + second;
+      }
+      
+      const value = minute + ':' + second;
+
+      return value;
+    },
+    timer(){
+      this.count.setSeconds(this.count.getSeconds() - 1);
+
+      var minute = this.count.getMinutes().toString();
+      var second = this.count.getSeconds().toString();
+      
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
+      if (second < 10) {
+        second = "0" + second;
+      }
+      
+      this.timeLeft = minute + ':' + second;
+
+      if(this.timeLeft === '00:00'){
+          this.submitTest(this.quiz.test.id);
+      }
+
+      return this.timeLeft;
+    },
+    callTimer(){
+      setInterval(this.timer, 1000);
     }
   },
 };

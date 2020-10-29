@@ -16,9 +16,7 @@
     </header>
 
     <div class="main">
-      <div class="main-element">
         <router-view></router-view>
-      </div>
       <!--LEFT NAVIGATION BAR-->
       <div class="left-nav open" id="left_nav">
         <div class="hamburguer">

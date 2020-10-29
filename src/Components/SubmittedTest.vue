@@ -1,9 +1,9 @@
 <template>
     <div id="quiz_layout" class="quiz-layout">
     <header>
-      <h2>Disciplina:{{ quiz.test.course }}</h2>
-      <h4>Tópico:{{ quiz.test.topic }}</h4>
-      <h1>Nota:{{userTest.score}}</h1>
+      <h2>Disciplina: {{ quiz.test.course }}</h2>
+      <h4>Tópico: {{ quiz.test.topic }}</h4>
+      <h2 id="quiz_score">Nota: {{userTest.score}}</h2>
     </header>
 
     <div v-for="q in quiz.questions" :key="q.id">
@@ -29,7 +29,7 @@
         readonly
         :value="userTest.answers.find(i => i.questionId == q.id).answer"/>
             
-        <label>Resposta Correcta:{{q.correctAnswer}}</label>
+        <label>Resposta Correcta: {{q.correctAnswer}}</label>
       </div>
     </div>
     <div>

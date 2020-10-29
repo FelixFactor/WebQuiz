@@ -2,7 +2,7 @@
   <div id="register" class="registerGrid">
     <label id="register_item1">Criar conta no WebQuiz</label>
     <div id="register_item2">
-      <label>Primeiro Nome</label>
+      <label>Nome</label>
       <input
         id="register_first_name"
         class="registerInput"
@@ -26,6 +26,15 @@
         class="registerInput"
         type="text"
         v-model="input.email"
+      />
+    </div>
+    <div id="register_item12">
+      <label>Pergunta de controlo (Qual a sua cor favorita?)</label>
+      <input
+        id="register_control"
+        class="registerInput"
+        type="text"
+        v-model="input.control"
       />
     </div>
     <div id="register_item5">
@@ -129,6 +138,9 @@ export default {
         address: "",
         birthdate: "",
         nif: "",
+        control: "",
+        salt: "",
+        saltControl: ""
       },
       repeat_pass: "",
       currentUser: undefined,

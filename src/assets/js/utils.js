@@ -191,6 +191,7 @@ function clearFields() {
   newUser.register_tin.value = "";
   newUser.register_phone.value = "";
   newUser.register_birth_date.value = "";
+  newUser.register_control.value = "";
 
   byID("register_country").value = "Portugal";
 }
@@ -198,6 +199,9 @@ function clearFields() {
 //Clear fields of register
 function clearForgotFields() {
   byID("forgot_username").value = "";
+  byID("forgot_control").value = "";
+  byID("forgot_pass").value = "";
+  byID("forgot_repeat_pass").value = "";
 }
 
 /**
@@ -222,7 +226,8 @@ function isRegisterInputEmpty(
   address,
   tin,
   phone,
-  birthDate
+  birthDate,
+  control
 ) {
   if (
     username === "" ||
@@ -233,7 +238,8 @@ function isRegisterInputEmpty(
     address === "" ||
     tin === "" ||
     phone === "" ||
-    birthDate === ""
+    birthDate === "" ||
+    control === ""
   ) {
     return true;
   }

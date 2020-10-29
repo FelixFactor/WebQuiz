@@ -25,7 +25,7 @@ if (!localStorage.getItem(AVAILABLE_TESTS)) {
       dificulty: "Média",
       maxScore: 20,
       duration: 2,
-      startDate: "2020-10-28T00:00:00.000Z",
+      startDate: "2020-10-28",
       repeatTest: true,
       questions: [1, 2, 3, 4]
     },
@@ -37,7 +37,7 @@ if (!localStorage.getItem(AVAILABLE_TESTS)) {
       dificulty: "Fácil",
       maxScore: 10,
       duration: 2,
-      startDate: "2020-10-28T00:00:00.000Z",
+      startDate: "2020-10-28",
       repeatTest: true,
       questions: [9, 10, 11, 12]
     },
@@ -49,7 +49,7 @@ if (!localStorage.getItem(AVAILABLE_TESTS)) {
       dificulty: "Fácil",
       maxScore: 20,
       duration: 2,
-      startDate: "2020-10-28T00:00:00.000Z",
+      startDate: "2020-10-28",
       repeatTest: true,
       questions: [5, 6, 7, 8]
     },
@@ -61,7 +61,7 @@ if (!localStorage.getItem(AVAILABLE_TESTS)) {
       dificulty: "Regular",
       maxScore: 20,
       duration: 2,
-      startDate: "2020-10-28T15:00:00.000Z",
+      startDate: "2020-10-29",
       repeatTest: false,
       questions: [5, 6, 7, 8]
     }

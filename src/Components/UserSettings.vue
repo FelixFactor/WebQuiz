@@ -1,7 +1,7 @@
 <template>
   <div id="settings" class="gridSettings">
     <div id="settings_item1">
-      <label>Primeiro Nome</label>
+      <label>Nome</label>
       <input id="settings_first_name" class="" type="text" v-model="input.firstName"/>
     </div>
     <div id="settings_item2">
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import sessionManager from "../assets/js/userManager.js";
+import userManager from "../assets/js/userManager.js";
 import * as utils from "../assets/js/utils.js";
 
 export default {
@@ -81,8 +81,8 @@ export default {
   },
   methods:{
     saveSettings(){
-      const email = sessionManager.getUserEmail();
-      const user = sessionManager.getUserByID(email);
+      const email = userManager.getUserEmail();
+      const user = userManager.getUserByID(email);
       let msg = utils.byID("settings_errormsg");
 
       try{
@@ -100,17 +100,19 @@ export default {
           birthdate: this.input.birthdate,
           address: this.input.address,
           country: this.input.country,
+          control: user.control,
+          saltControl: user.saltControl
           };
 
-          sessionManager.removeUser(user);
+          userManager.removeUser(user);
 
-          sessionManager.createUser(newUser);
+          userManager.createUser(newUser);
 
           msg.innerHTML = "Definições alteradas com sucesso.";
           msg.style.color = "green";
           msg.classList.remove("hidden");
           utils.byID("welcomeUser").innerHTML = "Bem-vindo ";
-          utils.byID("welcomeUser").innerHTML += sessionManager.getUserFullName(newUser.email);
+          utils.byID("welcomeUser").innerHTML += userManager.getUserFullName(newUser.email);
         }
         else{
           utils.ValidateFields(this.input.firstName, this.input.lastName, this.input.email, this.input.mobileNumber, this.input.nif);
@@ -143,17 +145,19 @@ export default {
           pwd: this.input.pwd,
           country: this.input.country,
           salt: "",
+          control: user.control,
+          saltControl: user.saltControl
           };
 
-          sessionManager.removeUser(user);
+          userManager.removeUser(user);
 
-          sessionManager.createUser(newUser);
+          userManager.createUser(newUser);
 
           msg.innerHTML = "Definições alteradas com sucesso.";
           msg.style.color = "green";
           msg.classList.remove("hidden");
           utils.byID("welcomeUser").innerHTML = "Bem-vindo ";
-          utils.byID("welcomeUser").innerHTML += sessionManager.getUserFullName(newUser.email);
+          utils.byID("welcomeUser").innerHTML += userManager.getUserFullName(newUser.email);
         }
 
         this.input.pwd = "";
@@ -166,8 +170,8 @@ export default {
       }
     },
     loadUser(){
-      const email = sessionManager.getUserEmail();
-      const user = sessionManager.getUserByID(email);
+      const email = userManager.getUserEmail();
+      const user = userManager.getUserByID(email);
       this.input.firstName=user.firstName;
       this.input.lastName=user.lastName;
       this.input.email=user.email;

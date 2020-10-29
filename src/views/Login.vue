@@ -52,6 +52,12 @@ export default {
     toLogin() {
       try{
         utils.isInputEmpty(this.email, this.pass);
+
+        //Validate email
+        if (!utils.regexEmail(this.email)) {
+          throw new Error("Introduza um email válido.");
+        }
+
         this.currentUser = userManager.clientSideLogin(this.email, this.pass);
         if(this.currentUser == undefined){
           this.$router.replace({ name: "login" });
@@ -60,6 +66,7 @@ export default {
       }catch(ex){
         utils.byID('errormsg').innerHTML = ex.message;
         utils.byID('errormsg').classList.remove("hidden");
+        this.pass = "";
       }
     },
     toRegister() {

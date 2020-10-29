@@ -36,7 +36,9 @@ if (!localStorage.getItem(USERS_STORAGE_KEY)) {
       mobileNumber: 213561987,
       birthdate: new Date(2001, 0, 1), // WET: 01/01/2001
       address: "Av. da República, n. 5 - 7o Dto, 1100-031 Lisboa",
-      country: "Espanha"
+      country: "Espanha",
+      saltControl: "0l/CqPdJdB",
+      control: "a204f38100fc7d9242eeab2d1d16bb787fb4715baf0dcd2361e28c7347a26ff9" //Laranja
     }
   ];
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
@@ -148,14 +150,47 @@ export default {
       alg: "sha256",
       prov: "cryptojs"
     });
-    const salt = generateSalt(SALT_LENGTH);
-    md.updateString(salt+userSpec.pwd);
-    const newUser = {
-      ...userSpec,
-      salt: salt,
-      pwd: md.digest()
-    };
-    this.storeUser(newUser);
+
+    const md2 = new jsrsasign.KJUR.crypto.MessageDigest({
+      alg: "sha256",
+      prov: "cryptojs"
+    });
+
+    if(userSpec.salt === ""){
+
+      if(userSpec.saltControl === "")
+      {
+        const salt = generateSalt(SALT_LENGTH);
+        md.updateString(salt+userSpec.pwd);
+        md2.updateString(salt+userSpec.control);
+        const newUser = {
+          ...userSpec,
+          salt: salt,
+          saltControl: salt,
+          control: md2.digest(),
+          pwd: md.digest()
+        };
+
+        this.storeUser(newUser);
+      }
+      else{
+        const salt = generateSalt(SALT_LENGTH);
+        md.updateString(salt+userSpec.pwd);
+        const newUser = {
+          ...userSpec,
+          salt: salt,
+          pwd: md.digest()
+        };
+
+        this.storeUser(newUser);
+      }
+    }
+    else
+    {
+      const newUser = userSpec;
+
+      this.storeUser(newUser);
+    }
   },
   /** */
   storeUser(newUser) {
@@ -181,6 +216,25 @@ export default {
   getUserByID(userID) {
     return this.usersDB().find(user => user.email === userID);
   },
+  /** */
+  getUserByEmailAndControl(email, control){
+    const md = new jsrsasign.KJUR.crypto.MessageDigest({
+      alg: "sha256",
+      prov: "cryptojs"
+    });
+
+    const user = this.usersDB().find(user => user.email === email);
+
+    md.updateString(user.saltControl+control);
+
+    if(user.control === md.digest())
+    {
+      return user;
+    }
+
+    return undefined;
+  },
+  /** */
   /** */
   isTokenValid(){        
     const jwt = getCookieValue(USER_JWT);

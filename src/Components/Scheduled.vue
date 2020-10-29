@@ -5,7 +5,7 @@
         <p name="course">{{ quiz.course }}</p>
         <p name="topic">{{ quiz.topic }}</p>
         <p name="professor">{{ quiz.professor }}</p>
-        <p name="dificulty">{{ quiz.dificulty }}</p>
+        <p name="dificulty">Dificuldade: {{ quiz.dificulty }}</p>
         <a id="btn_enterTest" class="btn btn-success">
           Entrar
         </a>

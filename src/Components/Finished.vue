@@ -4,9 +4,9 @@
       <div class="quiz-element">
         <p name="course">{{ quiz.course }}</p>
         <p name="topic">{{ quiz.topic }}</p>
-        <p name="professor">{{ quiz.completeDate }}</p>
-        <p name="dificulty">{{ quiz.score }}</p>
-        <router-link :to="{name: 'submitted-test', params: {quizId: quiz.index}}">
+        <p name="completeDate">Realizado: {{ quiz.completeDate }}</p>
+        <p name="score">Nota: {{ quiz.score }}</p>
+        <router-link :to="{name: 'submitted-test', params: {quizId: quiz.index}}" class="link">
           <a id="btn_enterTest" class="btn btn-success">
             Rever
           </a>

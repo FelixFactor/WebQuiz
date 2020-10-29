@@ -5,10 +5,10 @@
           <p name="course">{{ quiz.course }}</p>
           <p name="topic">{{ quiz.topic }}</p>
           <p name="professor">{{ quiz.professor }}</p>
-          <p name="dificulty">{{ quiz.dificulty }}</p>
-          <p name="dificulty">{{ quiz.duration }}</p>
-          <p name="dificulty">{{ quiz.startDate }}</p>
-          <router-link :to="{name: 'active-test', params:{activeId: quiz.id}}">
+          <p name="dificulty">Dificuldade: {{ quiz.dificulty }}</p>
+          <p name="duration">Duração: {{ quiz.duration }} min</p>
+          <p name="startDate">{{ quiz.startDate }}</p>
+          <router-link :to="{name: 'active-test', params:{activeId: quiz.id}}" class="link">
             <a id="btn_enterTest" class="btn btn-success">Entrar</a>
           </router-link>
         </div>

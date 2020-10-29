@@ -177,7 +177,7 @@ function ToLogin() {
 
   //gets the element top-nav and hides it
   addClassById("top-nav", "hidden");
-
+  
   //gets the element homepage and hides it
   addClassById("homepage", "hidden");
 
