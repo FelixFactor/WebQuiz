@@ -122,19 +122,18 @@
      margin: 5px 0;
  }
  
- #btn_available {
+ .nav-btns{
      margin-top: 50px;
  }
- 
+
  .left-nav-element {
-     background-color: #133864;
-     margin: 5px;
-     padding: 20px;
-     border: 1px solid black;
- }
- 
+    background-color: #133864;
+    margin: 5px;
+    padding: 20px;
+    border: 1px solid black;
+}
  .left-nav-element:hover {
-     background-color: #0E2D49;
+     background-color: #335C81;
      cursor: pointer;
  }
  
@@ -149,7 +148,7 @@
  }
  
  .active {
-     background-color: lightblue;
+     background-color: #335C81;
  }
  /*END SECTION*/
  /*BUTTONS*/

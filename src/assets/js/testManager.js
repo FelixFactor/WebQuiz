@@ -73,7 +73,7 @@ if (!localStorage.getItem(AVAILABLE_TESTS)) {
       dificulty: "Regular",
       maxScore: 20,
       duration: 2,
-      startDate: "2020-10-29",
+      startDate: "2020-11-03",
       repeatTest: false,
       questions: [5, 6, 7, 8]
     }
@@ -274,17 +274,14 @@ export default {
     score = 0;
     const answers = scoreUserAnswers();
     score = getScore(score, this.findTestById(testId));
-    var today = new Date();
-    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    let time = today.getHours() + ":" + today.getMinutes();
-    let dateTime = date+' '+time;
+    
     //const textHtml = byID("quiz_layout").innerHTML;
     const userQuiz = this.currentUserTest(
       userManager.getUserEmail(),
       testId,
       answers,
       score,
-      dateTime 
+      utils.getCurrentDate() 
     );
     return userTests.storeUSerTest(userQuiz);
   }

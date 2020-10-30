@@ -169,7 +169,7 @@ export default {
       this.$router.push({ name: "login" });
     },
     maxDate(){
-      utils.maxDate();
+      utils.maxDate(utils.byID('register_birth_date'));
     }
   },
 };

@@ -18,6 +18,7 @@
 
 <script>
 import testManager from "@/assets/js/testManager.js";
+import utils from "@/assets/js/utils.js";
 
 export default {
   name: "AvailableList",
@@ -34,7 +35,7 @@ export default {
       this.quizes = testManager.getAllAvailableTests();
     },
     getTests(){
-      return this.quizes.filter(test => test.repeatTest == true);
+      return this.quizes.filter(test => test.repeatTest == true || test.startDate === utils.getCurrentDate().split(' ')[0]);
     }
   }
 };

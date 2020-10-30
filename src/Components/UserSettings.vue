@@ -18,7 +18,7 @@
     </div>
     <div id="settings_item5">
       <label>Repetir Password</label>
-      <input id="settings_repeat_pass" class="" type="password" v-model="input.confirmedPassword"/>
+      <input id="settings_repeat_pass" class="" type="password" v-model="confirmedPassword"/>
     </div>
     <div id="settings_item6">
       <label>Telemóvel</label>
@@ -64,13 +64,13 @@ export default {
         lastName: "",
         email: "",
         pwd: "",
-        confirmedPassword: "",
         mobileNumber: "",
         country: "",
         address: "",
         birthdate: "",
         nif: "",
-      }
+      },
+      confirmedPassword: "",
     }
   },
   created() {
@@ -86,23 +86,10 @@ export default {
       let msg = utils.byID("settings_errormsg");
 
       try{
-        if(this.input.pwd==="" && this.input.confirmedPassword===""){
+        if(this.input.pwd==="" && this.confirmedPassword===""){
           utils.ValidateFields(this.input.firstName, this.input.lastName, this.input.email, this.input.mobileNumber, this.input.nif);
 
-          const newUser = {
-          email: this.input.email,
-          firstName: this.input.firstName,
-          lastName: this.input.lastName,
-          pwd: user.pwd,
-          salt: user.salt,
-          nif: this.input.nif,
-          mobileNumber: this.input.mobileNumber,
-          birthdate: this.input.birthdate,
-          address: this.input.address,
-          country: this.input.country,
-          control: user.control,
-          saltControl: user.saltControl
-          };
+          const newUser = {...this.input, salt:"", control: user.control, saltControl: user.saltControl};
 
           userManager.removeUser(user);
 
@@ -125,30 +112,15 @@ export default {
           }
 
           //Validate repeat password
-          if (!utils.regexPassword(this.input.confirmedPassword)) {
+          if (!utils.regexPassword(this.confirmedPassword)) {
             throw new Error("Repetição de password inválida.");
           }
 
           //Check if repeat password is equal to password
-          if (!(this.input.confirmedPassword === this.input.pwd)) {
+          if (!(this.confirmedPassword === this.input.pwd)) {
             throw new Error("Passwords não são iguais.");
           }
-
-          // const newUser = {
-          // email: this.input.email,
-          // firstName: this.input.firstName,
-          // lastName: this.input.lastName,
-          // nif: this.input.nif,
-          // mobileNumber: this.input.mobileNumber,
-          // birthdate: this.input.birthdate,
-          // address: this.input.address,
-          // pwd: this.input.pwd,
-          // country: this.input.country,
-          // salt: "",
-          // control: user.control,
-          // saltControl: user.saltControl
-          // };
-          const newUser = {...this.input, salt:""}
+          const newUser = {...this.input, salt:"", control: user.control, saltControl: user.saltControl};
 
           userManager.removeUser(user);
 
@@ -162,7 +134,7 @@ export default {
         }
 
         this.input.pwd = "";
-        this.input.confirmedPassword= "";
+        this.confirmedPassword= "";
       }
       catch(ex){
         msg.innerHTML = ex.message;
@@ -184,7 +156,7 @@ export default {
       this.input.nif=user.nif;
     },
     maxDate(){
-      utils.maxDateSettings();
+      utils.maxDate(utils.byID('settings_birth_date'));
     }
   }
 }

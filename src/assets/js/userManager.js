@@ -42,7 +42,7 @@ if (!localStorage.getItem(USERS_STORAGE_KEY)) {
 /** */
 function usersDB() {
   if (!localStorage[USERS_STORAGE_KEY]) {
-    throw DBError("Database is empty/uninitialized.");
+    throw DBError("A base de dados não existe!");
   }
   return JSON.parse(localStorage[USERS_STORAGE_KEY]);
 }
@@ -172,7 +172,7 @@ export default {
     const existingAttr = userExists(userSpec);
     if (existingAttr) {
       throw new UserError(
-        `There is already a registered user with the same ${existingAttr}.`
+        `Já existe um user com o mesmo ${existingAttr}.`
       );
     }
     const salt = generateSalt(SALT_LENGTH);
@@ -219,7 +219,7 @@ export default {
   getUserByEmailAndControl(email, control) {
     const user = usersDB().find(user => user.email === email);
     if (!user) {
-      throw new Error("Não existe nenhum user com esse email");
+      throw new Error("Não existe nenhum user com esse email.");
     }
     const userCtrl = createHash(user.saltControl, control)
     if (user.control === userCtrl) {
@@ -297,7 +297,7 @@ function userExists(newUserSpec) {
 function authenticateUser(username, pwd) {
   const user = getUserByLoginCredentials(username, pwd);
   if (!user) {
-    throw new UserError("Invalid username and/or password.");
+    throw new UserError("Username/password não está correto.");
   }
   utils.setCookieValue(USER_JWT, generateJWTForUser(user), { maxAge: 86400 });
   return new userDetails(user.email, user.firstName, user.lastName);
@@ -328,6 +328,9 @@ function getUserByLoginCredentials(username, pwd) {
   const db = usersDB();
   const user = db.find(
     user => user.email === username);
+  if(user === undefined){
+    throw new Error("Não existe nenhum user com esse email.")
+  }
   md.updateString(user.salt + pwd);
   return db.find(
     user => user.email === username && user.pwd === md.digest());
@@ -336,12 +339,12 @@ function getUserByLoginCredentials(username, pwd) {
 function requestUserInformation() {
   const userJSON = this.getCurrentUser();
   if (!userJSON) {
-    throw TypeError(`Unexpected falsy return value: ${userJSON}.`);
+    throw TypeError(`Erro inesperado: ${userJSON}.`);
   }
   const user = JSON.parse(userJSON);
   if (user === null || Array.isArray(user) || typeof user !== "object") {
     throw TypeError(
-      `Unexpected return value from remote method: ${userJSON}.`
+      `O valor retornado não coincide: ${userJSON}.`
     );
   }
   return userJSON !== null ? user : undefined;

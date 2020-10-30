@@ -1,20 +1,20 @@
 <template>
   <div  class="main-element quiz-box">
-    <div v-for="quiz of quizes" v-bind:key="quiz.id">
+    <div v-for="quiz of getQuizes()" v-bind:key="quiz.id">
       <div class="quiz-element">
         <p name="course">{{ quiz.course }}</p>
         <p name="topic">{{ quiz.topic }}</p>
-        <p name="professor">{{ quiz.professor }}</p>
         <p name="dificulty">Dificuldade: {{ quiz.dificulty }}</p>
-        <a id="btn_enterTest" class="btn btn-success">
-          Entrar
-        </a>
+        <p name="starDate">Data Agendada: {{quiz.startDate}}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import testManager from "@/assets/js/testManager.js";
+import utils from "@/assets/js/utils.js";
+
 export default {
   name: "Scheduled",
   data() {
@@ -27,15 +27,10 @@ export default {
   },
   methods: {
     loadQuizes() {
-      this.quizes = [
-        {
-           id: 1,
-          course: "Português",
-          topic: "Camões",
-          professor: "Paula Matos",
-          dificulty: "Média"
-        }
-      ]
+      this.quizes = testManager.getAllAvailableTests();
+    },
+    getQuizes() {
+      return this.quizes.filter(t => utils.returnDate(t.startDate) > utils.returnDate(utils.getCurrentDate().split(' ')[0]));
     }
   }
 }

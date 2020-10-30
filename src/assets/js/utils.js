@@ -266,9 +266,9 @@ export default {
     }
   },
   /**
-   * Set max date for register_birth_date
+   * Set max date for register_birth_date & settings_birth_date
    */
-  maxDate() {
+  maxDate(element) {
     var dtToday = new Date();
     var month = dtToday.getMonth() + 1;
     var day = dtToday.getDate();
@@ -280,24 +280,23 @@ export default {
       day = "0" + day.toString();
     }
     var value = year + "-" + month + "-" + day;
-    this.byID("register_birth_date").setAttribute("max", value);
+    element.setAttribute("max", value);
   },
   /**
-   * Set max date for settings_birth_date 
+   * Gets the current date in a string
    */
-  maxDateSettings() {
-    var dtToday = new Date();
-    var month = dtToday.getMonth() + 1;
-    var day = dtToday.getDate();
-    var year = dtToday.getFullYear();
-    if (month < 10) {
-      month = "0" + month.toString();
-    }
-    if (day < 10) {
-      day = "0" + day.toString();
-    }
-    var value = year + "-" + month + "-" + day;
-    this.byID("settings_birth_date").setAttribute("max", value);
+  getCurrentDate(){
+    var today = new Date();
+    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    let time = today.getHours() + ":" + today.getMinutes();
+    return date+' '+time;
+  },
+  /**
+   * return an new Date object with the values from a string
+   * @param {*} date the string with a date separated with a '-'
+   */
+  returnDate(date){
+    return new Date(date.split('-')[0], date.split('-')[1], date.split('-')[2])
   },
   //Open or collapse left-nav
   collapse() {
