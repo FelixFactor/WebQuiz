@@ -39,9 +39,9 @@ export default {
   storeUSerTest(userQuiz) {
     let counter = getIndex();
     counter += 1;
+    userQuiz.index = counter;
     const db = getUserTestsDB();
     db.push(userQuiz);
-    userQuiz.index = counter;
     localStorage.setItem(INDEX_TABLE_ID, counter)
     localStorage.setItem(USER_QUIZ_STORAGE, JSON.stringify(db));
     return userQuiz.index;

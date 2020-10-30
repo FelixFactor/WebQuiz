@@ -52,7 +52,7 @@
 
 <script>
 import userManager from "../assets/js/userManager.js";
-import * as utils from "../assets/js/utils.js";
+import utils from "../assets/js/utils.js";
 
 export default {
     name: "UserSettings",
@@ -134,20 +134,21 @@ export default {
             throw new Error("Passwords não são iguais.");
           }
 
-          const newUser = {
-          email: this.input.email,
-          firstName: this.input.firstName,
-          lastName: this.input.lastName,
-          nif: this.input.nif,
-          mobileNumber: this.input.mobileNumber,
-          birthdate: this.input.birthdate,
-          address: this.input.address,
-          pwd: this.input.pwd,
-          country: this.input.country,
-          salt: "",
-          control: user.control,
-          saltControl: user.saltControl
-          };
+          // const newUser = {
+          // email: this.input.email,
+          // firstName: this.input.firstName,
+          // lastName: this.input.lastName,
+          // nif: this.input.nif,
+          // mobileNumber: this.input.mobileNumber,
+          // birthdate: this.input.birthdate,
+          // address: this.input.address,
+          // pwd: this.input.pwd,
+          // country: this.input.country,
+          // salt: "",
+          // control: user.control,
+          // saltControl: user.saltControl
+          // };
+          const newUser = {...this.input, salt:""}
 
           userManager.removeUser(user);
 
@@ -170,6 +171,7 @@ export default {
       }
     },
     loadUser(){
+      //gets the current user's email
       const email = userManager.getUserEmail();
       const user = userManager.getUserByID(email);
       this.input.firstName=user.firstName;
@@ -187,3 +189,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+</style>

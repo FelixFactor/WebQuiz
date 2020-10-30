@@ -2,12 +2,12 @@
   <section  class="main-element quiz-box">
       <div  v-for="quiz of getTests()" v-bind:key="quiz.id">
         <div class="quiz-element">
-          <p name="course">{{ quiz.course }}</p>
-          <p name="topic">{{ quiz.topic }}</p>
-          <p name="professor">{{ quiz.professor }}</p>
+          <p name="course">Curso: {{ quiz.course }}</p>
+          <p name="topic">Tópico: {{ quiz.topic }}</p>
           <p name="dificulty">Dificuldade: {{ quiz.dificulty }}</p>
           <p name="duration">Duração: {{ quiz.duration }} min</p>
           <p name="startDate">{{ quiz.startDate }}</p>
+          <p name="maxScore">Nota Máxima: {{quiz.maxScore}}</p>
           <router-link :to="{name: 'active-test', params:{activeId: quiz.id}}" class="link">
             <a id="btn_enterTest" class="btn btn-success">Entrar</a>
           </router-link>

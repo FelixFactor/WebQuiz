@@ -1,7 +1,8 @@
 <template>
   <div id="login" class="grid">
     <label id="item1">
-      Bem Vindo ao WebQuiz
+      <img src="@/assets/icon.png" alt="">
+      <h1>Bem Vindo ao WebQuiz</h1>
     </label>
 
     <input
@@ -31,7 +32,7 @@
 
 <script>
 import userManager from "@/assets/js/userManager.js";
-import * as utils from "@/assets/js/utils.js";
+import utils from "@/assets/js/utils.js";
 
 export default {
   name: "Login",
@@ -82,4 +83,10 @@ export default {
 };
 </script>
 
-<style src="@/assets/css/login.css" scoped></style>
+
+
+<style src="@/assets/css/login.css" scoped>
+h1{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+</style>

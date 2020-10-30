@@ -1,13 +1,13 @@
 <template>
   <div id="homepage">
     <header>
-      <h1>WebQuiz</h1>
+      <h1><img src="@/assets/icon.png" width="25" height="25" alt=""> WebQuiz</h1>
       <nav id="top-nav" class="top-nav">
         <div class="top-nav-element">
-          <span id="welcomeUser">Bem-vindo {{user.fullname}}</span>
+          <span id="welcomeUser" >Bem-vindo {{user.fullname}}</span>
 
           <router-link :to="{ name: 'user-settings' }">
-            <a id="btn_settings">Settings</a>
+            <a id="btn_settings">Opções de Conta</a>
           </router-link>
 
           <a id="btn_logout" href="" @click.prevent="toLogout">Logout</a>
@@ -45,12 +45,12 @@
       </div>
       <!--END LEFT NAVIGATION BAR-->
     </div>
-    <footer>Footer</footer>
+    <footer></footer>
   </div>
 </template>
 
 <script>
-import { collapse } from "@/assets/js/utils.js";
+import utils from "@/assets/js/utils.js";
 import userManager from "@/assets/js/userManager.js";
 
 export default {
@@ -79,7 +79,7 @@ export default {
       this.$router.push({ name: "login" });
     },
     navbar() {
-      collapse();
+      utils.collapse();
     },
     loadAvailable(){
       this.$router.push({name: 'available-list'});

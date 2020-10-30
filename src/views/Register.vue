@@ -120,9 +120,8 @@
 </template>
 
 <script>
-import sessionManager from "@/assets/js/userManager.js";
-import { register } from "@/assets/js/site.js";
-import * as utils from "@/assets/js/utils.js";
+import userManager from "@/assets/js/userManager.js";
+import utils from "@/assets/js/utils.js";
 
 export default {
   name: "register",
@@ -148,9 +147,8 @@ export default {
     };
   },
   create() {
-    if (sessionManager.isLoggedIn()) {
+    if (userManager.isLoggedIn()) {
       console.log("Current user already logged in.");
-
       this.$router.push({ name: "home" });
     }
   },
@@ -160,7 +158,7 @@ export default {
   methods: {
     registerUser() {
       try{
-        register(this.input, this.repeat_pass);
+        userManager.register(this.input, this.repeat_pass);
       }catch(e){
         utils.byID('register_errormsg').innerHTML = e.message;
         utils.byID('register_errormsg').style.color = "red";

@@ -41,14 +41,14 @@
       value="Recuperar"
     />
 
-    <label id="forgot_errormsg" class="forgotInput hidden"></label>
+    <label id="forgot_errormsg" class="forgotInput" :class="error? 'error':'ok'">{{errorMsg}}</label>
 
     <a id="forgot_toLogin" href="#" @click.prevent="toLogin">Voltar ao login</a>
   </div>
 </template>
 
 <script>
-import * as utils from "../assets/js/utils.js";
+import utils from "../assets/js/utils.js";
 import userManager from "../assets/js/userManager.js";
 
 export default {
@@ -60,6 +60,8 @@ export default {
       pwd: "",
       repeat_pass: "",
       currentUser: undefined,
+      errorMsg: "",
+      error: false
     };
   },
   methods: {
@@ -67,8 +69,6 @@ export default {
       this.$router.push({ name: "login" });
     },
     recoverAcc() {
-      let msg = utils.byID("forgot_errormsg");
-
       try {
         //Check if input is empty
         if (
@@ -130,14 +130,11 @@ export default {
 
         userManager.createUser(newUser);
 
-        msg.innerHTML = "Conta recuperada com sucesso.";
-        msg.style.color = "green";
-        msg.classList.remove("hidden");
+        this.errorMsg = "Conta recuperada com sucesso.";
         utils.clearForgotFields();
       } catch (ex) {
-        msg.innerHTML = ex.message;
-        msg.style.color = "red";
-        msg.classList.remove("hidden");
+        this.error = true;
+        this.errorMsg = ex.message;
         this.pwd = "";
         this.repeat_pass = "";
       }
@@ -146,4 +143,5 @@ export default {
 };
 </script>
 
-<style src="@/assets/css/login.css" scoped></style>
+<style src="@/assets/css/login.css" scoped>
+</style>

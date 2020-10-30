@@ -53,7 +53,7 @@ export default {
       const tests = userTests.getFinishedTests(this.currentUser.email);
       for(let test of tests){
         const getTest = this.getTestByID(test.quizId);
-        this.userTests.push(this.userTest(test.index, test.quizId, getTest.course, getTest.topic, "28 Out 2020", test.score));
+        this.userTests.push(this.userTest(test.index, test.quizId, getTest.course, getTest.topic, test.date, test.score));
       }
     },
     getTestByID(quizId){

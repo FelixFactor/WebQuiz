@@ -13,6 +13,7 @@ body {
 
 header {
     background-color: white;
+    min-height: 15vh;
 }
 
 
@@ -40,8 +41,9 @@ header {
 /*TOP NAVIGATION BAR*/
 
 .top-nav {
-    background-color: white;
-    border-top: 2px solid lightgrey;
+    background-color: transparent;
+    border-top: 1px solid lightgrey;
+    margin-top: 40px;
 }
 
 #btn_logout {
@@ -68,12 +70,25 @@ header {
 
 /*END SECTION*/
 
+/*ERROR VERIFICATION*/
+.error{
+    color: red;
+  }
+.ok{
+    color:green;
+}
+
 header,
 footer,
 article,
 .left-nav,
 .top-nav {
     padding: 1em;
+}
+
+header{
+    background-image: url(../back.jpg);
+    color: white;
 }
 
 footer{
